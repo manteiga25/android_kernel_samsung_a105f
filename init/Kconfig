@@ -1410,6 +1410,34 @@ config CC_OPTIMIZE_FOR_SIZE
 
 endchoice
 
+config LTO_MENU
+	bool "Enable gcc link time optimization (LTO)"
+	depends on GCC_VERSION >= 60000
+	depends on LD_VERSION >= 227000000
+	help
+	  See Andi Kleen's docs
+
+config LTO_DISABLE
+         bool "Disable LTO again"
+         depends on LTO_MENU
+         default n
+         help
+           This option is merely here so that allyesconfig or allmodconfig do
+           not enable LTO. If you want to actually use LTO do not enable.
+
+config LTO
+	bool
+	default y
+	depends on LTO_MENU && !LTO_DISABLE
+
+config LTO_CP_CLONE
+	bool "Allow aggressive cloning for function specialization"
+	depends on LTO
+	help
+	  Allow the compiler to clone and specialize functions for specific
+	  arguments when it determines these arguments are very commonly
+	  called.  Experimential. Will increase text size.
+
 config SYSCTL
 	bool
 

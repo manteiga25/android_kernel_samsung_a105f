@@ -88,13 +88,13 @@
 
 static inline void gic_write_eoir(u32 irq)
 {
-	asm volatile("msr_s " __stringify(ICC_EOIR1_EL1) ", %0" : : "r" ((u64)irq));
+	write_sysreg_s(irq, ICC_EOIR1_EL1);
 	isb();
 }
 
-static inline void gic_write_dir(u32 irq)
+static __always_inline void gic_write_dir(u32 irq)
 {
-	asm volatile("msr_s " __stringify(ICC_DIR_EL1) ", %0" : : "r" ((u64)irq));
+	write_sysreg_s(irq, ICC_DIR_EL1);
 	isb();
 }
 
@@ -102,7 +102,7 @@ static inline u64 gic_read_iar_common(void)
 {
 	u64 irqstat;
 
-	asm volatile("mrs_s %0, " __stringify(ICC_IAR1_EL1) : "=r" (irqstat));
+	irqstat = read_sysreg_s(ICC_IAR1_EL1);
 	dsb(sy);
 	return irqstat;
 }
@@ -118,51 +118,65 @@ static inline u64 gic_read_iar_cavium_thunderx(void)
 {
 	u64 irqstat;
 
-	asm volatile(
-		"nop;nop;nop;nop\n\t"
-		"nop;nop;nop;nop\n\t"
-		"mrs_s %0, " __stringify(ICC_IAR1_EL1) "\n\t"
-		"nop;nop;nop;nop"
-		: "=r" (irqstat));
+	nops(8);
+	irqstat = read_sysreg_s(ICC_IAR1_EL1);
+	nops(4);
 	mb();
 
 	return irqstat;
 }
 
-static inline void gic_write_pmr(u32 val)
-{
-	asm volatile("msr_s " __stringify(ICC_PMR_EL1) ", %0" : : "r" ((u64)val));
-}
-
 static inline void gic_write_ctlr(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_CTLR_EL1) ", %0" : : "r" ((u64)val));
+	write_sysreg_s(val, ICC_CTLR_EL1);
 	isb();
+}
+
+static inline u32 gic_read_ctlr(void)
+{
+	return read_sysreg_s(ICC_CTLR_EL1);
 }
 
 static inline void gic_write_grpen1(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_GRPEN1_EL1) ", %0" : : "r" ((u64)val));
+	write_sysreg_s(val, ICC_GRPEN1_EL1);
 	isb();
 }
 
 static inline void gic_write_sgi1r(u64 val)
 {
-	asm volatile("msr_s " __stringify(ICC_SGI1R_EL1) ", %0" : : "r" (val));
+	write_sysreg_s(val, ICC_SGI1R_EL1);
 }
 
 static inline u32 gic_read_sre(void)
 {
-	u64 val;
-
-	asm volatile("mrs_s %0, " __stringify(ICC_SRE_EL1) : "=r" (val));
-	return val;
+	return read_sysreg_s(ICC_SRE_EL1);
 }
 
 static inline void gic_write_sre(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_SRE_EL1) ", %0" : : "r" ((u64)val));
+	write_sysreg_s(val, ICC_SRE_EL1);
 	isb();
+}
+
+static inline void gic_write_bpr1(u32 val)
+{
+	write_sysreg_s(val, ICC_BPR1_EL1);
+}
+
+static inline u32 gic_read_pmr(void)
+{
+	return read_sysreg_s(ICC_PMR_EL1);
+}
+
+static __always_inline void gic_write_pmr(u32 val)
+{
+	write_sysreg_s(val, ICC_PMR_EL1);
+}
+
+static inline u32 gic_read_rpr(void)
+{
+	return read_sysreg_s(ICC_RPR_EL1);
 }
 
 #define gic_read_typer(c)		readq_relaxed(c)

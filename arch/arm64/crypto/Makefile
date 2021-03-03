@@ -9,16 +9,16 @@
 #
 
 obj-$(CONFIG_CRYPTO_SHA1_ARM64_CE) += sha1-ce.o
-sha1-ce-y := sha1-ce-glue.o sha1-ce-core.o
+sha1-ce-y := sha1-ce-glue.o
 
 obj-$(CONFIG_CRYPTO_SHA2_ARM64_CE) += sha2-ce.o
-sha2-ce-y := sha2-ce-glue.o sha2-ce-core.o
+sha2-ce-y := sha2-ce-glue.o
 
 obj-$(CONFIG_CRYPTO_GHASH_ARM64_CE) += ghash-ce.o
 ghash-ce-y := ghash-ce-glue.o ghash-ce-core.o
 
 obj-$(CONFIG_CRYPTO_POLY_HASH_ARM64_CE) += poly-hash-ce.o
-poly-hash-ce-y := poly-hash-ce-glue.o poly-hash-ce-core.o
+poly-hash-ce-y := poly-hash-ce-glue.o
 
 obj-$(CONFIG_CRYPTO_AES_ARM64_CE) += aes-ce-cipher.o
 CFLAGS_aes-ce-cipher.o += -march=armv8-a+crypto
@@ -27,7 +27,7 @@ obj-$(CONFIG_CRYPTO_AES_ARM64_CE_CCM) += aes-ce-ccm.o
 aes-ce-ccm-y := aes-ce-ccm-glue.o aes-ce-ccm-core.o
 
 obj-$(CONFIG_CRYPTO_AES_ARM64_CE_BLK) += aes-ce-blk.o
-aes-ce-blk-y := aes-glue-ce.o aes-ce.o
+aes-ce-blk-y := aes-glue-ce.o
 
 obj-$(CONFIG_CRYPTO_AES_ARM64_NEON_BLK) += aes-neon-blk.o
 aes-neon-blk-y := aes-glue-neon.o aes-neon.o
@@ -40,6 +40,9 @@ CFLAGS_aes-glue-ce.o	:= -DUSE_V8_CRYPTO_EXTENSIONS
 obj-$(CONFIG_CRYPTO_CRC32_ARM64) += crc32-arm64.o
 
 CFLAGS_crc32-arm64.o	:= -mcpu=generic+crc
+
+# i dont know how to do this better
+extra-y += aes-ce.o poly-hash-ce-core.o sha1-ce-core.o sha2-ce-core.o
 
 $(obj)/aes-glue-%.o: $(src)/aes-glue.c FORCE
 	$(call if_changed_rule,cc_o_c)

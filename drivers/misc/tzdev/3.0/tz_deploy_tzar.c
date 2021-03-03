@@ -31,8 +31,10 @@
 
 __asm__ (
   ".section .init.data,\"aw\"\n"
+  ".global tzdev_tzar_begin\n"
   "tzdev_tzar_begin:\n"
   ".incbin \"" KBUILD_SRC "/drivers/misc/tzdev/3.0/startup.tzar\"\n"
+  ".global tzdev_tzar_end\n"
   "tzdev_tzar_end:\n"
   ".previous\n"
 );

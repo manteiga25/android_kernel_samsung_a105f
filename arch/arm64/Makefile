@@ -77,6 +77,11 @@ endif
 # Default value
 head-y		:= arch/arm64/kernel/head.o
 
+# i dont know how to do this better
+head-y += arch/arm64/kernel/entry32.o arch/arm64/kernel/entry.o arch/arm64/kernel/entry-fpsimd.o arch/arm64/kernel/exynos-smc.o arch/arm64/kernel/hyp-stub.o arch/arm64/kernel/kuser32.o arch/arm64/kernel/sleep.o arch/arm64/kernel/smccc-call.o arch/arm64/kernel/vdso-wrap.o
+head-y += arch/arm64/mm/cache.o arch/arm64/mm/proc.o
+head-y += arch/arm64/crypto/aes-ce.o arch/arm64/crypto/poly-hash-ce-core.o arch/arm64/crypto/sha1-ce-core.o arch/arm64/crypto/sha2-ce-core.o
+
 # The byte offset of the kernel image in RAM from the start of RAM.
 ifeq ($(CONFIG_ARM64_RANDOMIZE_TEXT_OFFSET), y)
 TEXT_OFFSET := $(shell awk 'BEGIN {srand(); printf "0x%03x000\n", int(512 * rand())}')
