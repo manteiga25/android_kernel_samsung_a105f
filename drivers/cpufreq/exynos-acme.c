@@ -1307,9 +1307,6 @@ free:
 	return NULL;
 }
 
-extern int cpufreq_set_policy(struct cpufreq_policy *policy,
-				struct cpufreq_policy *new_policy);
-
 static int __init exynos_cpufreq_init(void)
 {
 	struct device_node *dn = NULL;
