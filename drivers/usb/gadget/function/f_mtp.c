@@ -566,6 +566,10 @@ static ssize_t mtp_read(struct file *fp, char __user *buf,
 
 	DBG(cdev, "mtp_read(%zu)\n", count);
 
+	/* https://github.com/LineageOS/android_kernel_samsung_universal7580/commit/3b168cb09c786cfe7f3e83a083181a11f3e95b95 */
+	if (dev == NULL || dev->ep_out == NULL)
+		 return -ENODEV;
+
 	/* we will block until we're online */
 	DBG(cdev, "mtp_read: waiting for online state\n");
 	ret = wait_event_interruptible(dev->read_wq,

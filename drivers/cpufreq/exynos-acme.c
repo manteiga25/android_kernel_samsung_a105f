@@ -1307,12 +1307,16 @@ free:
 	return NULL;
 }
 
+extern int cpufreq_set_policy(struct cpufreq_policy *policy,
+				struct cpufreq_policy *new_policy);
+
 static int __init exynos_cpufreq_init(void)
 {
 	struct device_node *dn = NULL;
 	struct exynos_cpufreq_domain *domain;
 	int ret = 0;
 	unsigned int domain_id = 0;
+	struct cpufreq_policy *policy;
 
 	while ((dn = of_find_node_by_type(dn, "cpufreq-domain"))) {
 		 if (domain_id >= 1 && ap_fuse == 2)
@@ -1367,6 +1371,19 @@ static int __init exynos_cpufreq_init(void)
 		enable_domain(domain);
 		update_freq(domain, domain->old);
 		cpufreq_update_policy(cpumask_first(&domain->cpus));
+
+		// set default limit
+		policy = cpufreq_cpu_get(0);
+		if(policy) {
+			policy->max = 1586000;
+			cpufreq_cpu_put(policy);
+		}
+
+		policy = cpufreq_cpu_get(6);
+		if(policy) {
+			policy->max = 1768000;
+			cpufreq_cpu_put(policy);
+		}
 	}
 
 	pr_info("Initialized Exynos cpufreq driver\n");
