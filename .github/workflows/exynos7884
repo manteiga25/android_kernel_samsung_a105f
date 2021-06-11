@@ -1,0 +1,25 @@
+strategy:
+      matrix:
+        model: [ "A105F ]
+      - name : Kernel Configure
+        run : |
+        ./cruelbuild config                    \
+                     model=${{ matrix.model }} \
+                     name="Unicorniokernel     \
+                     +magisk                   \
+                     +nohardening              \
+                     +nohardening2             \
+                     +dtb                      \
+                     +empty_vbmeta             \
+                     +always_permit            \
+                     +io_bfq                   \
+                     +sdfat                    \
+                     +ntfs                     \
+                     +cifs                     \
+                     +tcp_westwood             \
+                     +sched                    \
+                     +ttl                      \
+                     +mass_storage             \
+                     +wireguard                \
+                     +boeffla_wl_blocker       \
+                     +performance              \
